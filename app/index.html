@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Leonida Platinum — an offline GTA VI trophy guide and tracker: all 55 PlayStation 5 trophies with a checklist, a roadmap to the Platinum and the one missable trophy flagged.">
 <title>Leonida Platinum — GTA VI Trophy Guide &amp; Tracker</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
@@ -37,12 +38,12 @@
       <label>Kind
         <select id="kind">
           <option value="all">All kinds</option>
-          <option value="Story">Story</option>
-          <option value="Missable">Missable</option>
-          <option value="Collectibles">Collectibles</option>
-          <option value="Activities">Activities</option>
-          <option value="Side stories">Side stories</option>
-          <option value="Feats">Feats</option>
+          <option value="story">Story</option>
+          <option value="missable">Missable</option>
+          <option value="collectible">Collectibles</option>
+          <option value="activity">Activities</option>
+          <option value="side">Side stories</option>
+          <option value="feat">Feats</option>
         </select>
       </label>
       <label>Grade
@@ -54,7 +55,7 @@
           <option value="bronze">Bronze</option>
         </select>
       </label>
-      <label class="spoiler"><input id="spoiler" type="checkbox" checked> Hide story spoilers</label>
+      <label class="spoiler"><input id="spoiler" type="checkbox" checked> Hide hidden trophies</label>
       <span class="spacer"></span>
       <button id="export" type="button">Export progress</button>
       <label class="import">Import progress <input id="import" type="file" accept="application/json,.json"></label>
@@ -74,8 +75,9 @@
       story stays open after the credits. Work the stages in order.</p>
     <div class="stages" id="stages"></div>
     <p class="note">Stage totals come from the official descriptions and the launch-week guides:
-      the story is five chapters and takes 60–80 hours; the 100% checklist is the long
-      middle at about 100 hours; side stories and cleanup take about 10 hours.</p>
+      the story is four chapters plus the final mission and takes 60–80 hours; the 100%
+      checklist is the long middle at about 100 hours; side stories and cleanup take
+      about 10 hours.</p>
   </section>
 
   <section id="view-missables" class="view" hidden>

@@ -32,7 +32,7 @@ function gradeLabel(t) {
 
 function targetChip(t) {
   if (t.target == null) return '';
-  return `<span class="chip">Target: ${t.target.toLocaleString('en-US')} ${t.target_label}</span>`;
+  return `<span class="chip">Target: ${t.target}</span>`;
 }
 
 function renderProgress() {
@@ -57,7 +57,7 @@ function rowHtml(t) {
     <input type="checkbox" ${earned.has(t.id) ? 'checked' : ''} aria-label="Earned: ${masked ? 'hidden trophy' : t.name}" data-check="${t.id}">
     <span class="grade grade-${t.grade}" title="${gradeLabel(t)}">${t.grade === 'platinum' ? 'P' : t.grade === 'gold' ? 'G' : t.grade === 'silver' ? 'S' : 'B'}</span>
     <span class="rowtext"><strong>${name}</strong><span class="desc">${desc}</span></span>
-    <span class="tags"><span class="kind">${t.kind}</span>${t.missable && t.kind !== 'Missable' ? '<span class="missable">Missable</span>' : ''}${targetChip(t)}</span>
+    <span class="tags"><span class="kind">${t.kind}</span>${t.missable ? '<span class="missable">Missable</span>' : ''}${targetChip(t)}</span>
   </article>`;
 }
 
@@ -66,7 +66,11 @@ function visibleTrophies() {
   const kind = $('kind').value;
   const grade = $('grade').value;
   return trophies.filter((t) => {
-    if (kind !== 'all' && t.kind !== kind) return false;
+    if (kind === 'missable') {
+      if (!t.missable) return false;
+    } else if (kind !== 'all' && t.kind !== kind) {
+      return false;
+    }
     if (grade !== 'all' && t.grade !== grade) return false;
     if (q && !(t.name.toLowerCase().includes(q) || t.description.toLowerCase().includes(q) || t.guide.toLowerCase().includes(q))) return false;
     return true;
@@ -78,7 +82,7 @@ function renderList() {
   $('list').innerHTML = list.map(rowHtml).join('') ||
     '<p class="empty">No trophies match those filters. Clear the search or widen the filters.</p>';
   $('shownLine').textContent = `Showing ${list.length} of ${trophies.length} trophies` +
-    ($('spoiler').checked ? ' · story spoilers hidden until earned' : ' · spoilers shown');
+    ($('spoiler').checked ? ' · hidden trophies masked until earned' : ' · hidden trophies shown');
 }
 
 function renderDetail() {
@@ -87,13 +91,13 @@ function renderDetail() {
   const sourceLinks = t.sources.map((s) => `<li><a href="${s.url}">${s.name}</a></li>`).join('');
   $('detail').innerHTML = masked
     ? `<h2>Hidden trophy</h2>
-       <p class="official">This is a hidden story trophy. Its name, description and guide stay masked while
+       <p class="official">This is a hidden trophy. Its name, description and guide stay masked while
        the spoiler setting is on. Earn it in the game — or switch the spoiler setting off —
        to reveal it.</p>
        <p><span class="gradeword grade-${t.grade}">${gradeLabel(t)}</span> <span class="kind">${t.kind}</span></p>
        <button type="button" data-toggle="${t.id}">${earned.has(t.id) ? 'Mark as not earned' : 'Mark as earned'}</button>`
     : `<p class="kindline"><span class="gradeword grade-${t.grade}">${gradeLabel(t)}</span>
-       <span class="kind">${t.kind}</span>${t.missable && t.kind !== 'Missable' ? '<span class="missable">Missable</span>' : ''}${t.hidden ? '<span class="chip">Hidden on PSN</span>' : ''}</p>
+       <span class="kind">${t.kind}</span>${t.missable ? '<span class="missable">Missable</span>' : ''}${t.hidden ? '<span class="chip">Hidden on PSN</span>' : ''}</p>
        <h2>${t.name}</h2>
        <p class="official">“${t.description}”</p>
        ${targetChip(t)}
@@ -106,7 +110,7 @@ function renderDetail() {
 }
 
 const STAGES = [
-  { n: 1, title: 'Stage 1 — Play the story', hours: '60–80 hours', text: 'Chapters 1 to 5, in order. Finish the missions, do the side-story strands as they appear, and — most important — do Lucia’s balcony meditation in Chapter 1 for Positive Mental Attitude before that chapter ends. Keep a manual save at the start of every chapter.' },
+  { n: 1, title: 'Stage 1 — Play the story', hours: '60–80 hours', text: 'Chapters 1 to 4 and the final mission, in order. Finish the missions, try the side activities as they unlock, and — most important — do Lucia’s balcony meditation in Chapter 1 for Positive Mental Attitude before that chapter ends. Keep a manual save at the start of every chapter.' },
   { n: 2, title: 'Stage 2 — The 100% checklist', hours: 'About 100 hours', text: 'After the credits, open Progress, then Stats, then 100% Completion. Work the checklist in free-roam: challenges, stunts, vehicle scans, animal studies, collectibles and the money trophies. The thresholds are forgiving — 70 of 80 challenges, 200 of 277 vehicles — so skip the hardest bits.' },
   { n: 3, title: 'Stage 3 — Side stories & cleanup', hours: 'About 10 hours', text: 'The stranger strands that count toward Strangers & Freaks, the partner trophies, the robbery feats, and the five trophies whose method no guide has confirmed yet. The Platinum pops here, at the end.' },
 ];
@@ -118,8 +122,8 @@ function renderRoadmap() {
     const shown = members.filter((t) => !isMasked(t));
     const hiddenCount = members.length - shown.length;
     const items = shown.map((t) =>
-      `<li class="${earned.has(t.id) ? 'done' : ''}">${t.name} <span>${gradeLabel(t)}</span></li>`).join('') +
-      (hiddenCount ? `<li class="masked-note">…and ${hiddenCount} more hidden story trophies — masked while the spoiler setting is on</li>` : '');
+      `<li class="${earned.has(t.id) ? 'done' : ''}">${t.name} <span>(${gradeLabel(t)})</span></li>`).join('') +
+      (hiddenCount ? `<li class="masked-note">…and ${hiddenCount} more hidden trophies — masked while the spoiler setting is on</li>` : '');
     return `<article class="stage"><h3>${s.title} <span class="hours">${s.hours}</span></h3>
       <p>${s.text}</p>
       <p class="stagecount">${done} / ${members.length} earned in this stage</p>

@@ -114,6 +114,10 @@ button, .import {
 }
 .toolbar label.import { color: #fff; }
 button:hover, .import:hover { background: var(--coral-dark); }
+.row:focus-visible, .tabs a:focus-visible, button:focus-visible, .import:focus-visible {
+  outline: 2px solid var(--coral);
+  outline-offset: 2px;
+}
 .import input { display: none; }
 #reset { background: #fff; color: var(--ink); border-color: var(--line); }
 .shown { margin: 4px 0 12px; color: var(--muted); font-size: 14px; }
