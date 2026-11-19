@@ -26,12 +26,11 @@ if (existsSync(join(repoRoot, 'screenshots'))) {
 
 // The caps are the scorer's own: at most 4 screenshots of 256 KiB each, app/ within
 // 993 files and 48 MiB, and the dossier text within 160 KiB (1.5 MiB total).
-writeFileSync(
-  join(outputDir, 'dossier.json'),
-  buildDossier(outputDir, {
-    text_max_bytes: 163840,
-    screenshots: { max: 4, max_bytes: 262144 },
-    app_max_files: 993,
-    app_max_bytes: 50331648,
-  }),
-);
+const dossier = buildDossier(outputDir, {
+  text_max_bytes: 163840,
+  screenshots: { max: 4, max_bytes: 262144 },
+  app_max_files: 993,
+  app_max_bytes: 50331648,
+});
+writeFileSync(join(outputDir, 'dossier.json'), dossier);
+console.log(`Leonida Platinum dossier: ${Buffer.byteLength(dossier, 'utf8')} bytes in ${outputDir}`);

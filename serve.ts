@@ -27,7 +27,7 @@ const types: Record<string, string> = {
   '.ico': 'image/x-icon',
 };
 
-createServer((req, res) => {
+const server = createServer((req, res) => {
   let path = '/';
   try {
     path = decodeURIComponent(new URL(req.url ?? '/', 'http://localhost').pathname);
@@ -58,4 +58,8 @@ createServer((req, res) => {
   createReadStream(file).pipe(res);
 }).listen(port, '127.0.0.1', () => {
   console.log(`Leonida Platinum is on http://localhost:${port}`);
+});
+server.on('error', (err) => {
+  console.error(`Could not start the server on port ${port}: ${err.message}`);
+  process.exit(1);
 });
